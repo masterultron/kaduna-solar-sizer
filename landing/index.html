@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kaduna Solar Sizer — solar quotes in 2 minutes</title>
+  <meta name="description" content="Size solar systems for your customers and send a professional quote in 2 minutes. Built for Nigerian solar installers, using 10 years of NASA solar data.">
+  <style>
+    :root {
+      --orange: #e67e22;
+      --orange-dark: #c0651a;
+      --red: #d9534f;
+      --ink: #1f2328;
+      --muted: #5c6670;
+      --bg: #ffffff;
+      --soft: #fdf6ee;
+      --line: #eadfd2;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.55; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+    header { padding: 18px 0; }
+    header .wrap { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-weight: 800; font-size: 18px; }
+    .btn { display: inline-block; background: var(--orange); color: #fff; padding: 12px 22px; border-radius: 10px; font-weight: 700; text-decoration: none; }
+    .btn:hover { background: var(--orange-dark); }
+    .btn.ghost { background: transparent; color: var(--orange-dark); border: 2px solid var(--orange); }
+    .hero { padding: 56px 0 48px; background: var(--soft); }
+    .hero h1 { font-size: clamp(30px, 6vw, 48px); line-height: 1.12; margin: 0 0 16px; letter-spacing: -0.02em; }
+    .hero p { font-size: 18px; color: var(--muted); max-width: 620px; margin: 0 0 28px; }
+    .hero .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+    section { padding: 56px 0; }
+    h2 { font-size: 28px; margin: 0 0 24px; letter-spacing: -0.01em; }
+    .problem { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .card { border: 1px solid var(--line); border-radius: 14px; padding: 22px; background: #fff; }
+    .card h3 { margin: 0 0 8px; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); }
+    .stat { font-size: 40px; font-weight: 800; color: var(--red); line-height: 1; margin-bottom: 8px; }
+    .steps { counter-reset: step; display: grid; gap: 16px; padding: 0; list-style: none; }
+    .steps li { counter-increment: step; display: flex; gap: 16px; align-items: flex-start; }
+    .steps li::before { content: counter(step); flex: 0 0 36px; height: 36px; border-radius: 50%; background: var(--orange); color: #fff; font-weight: 800; display: grid; place-items: center; }
+    .steps strong { display: block; }
+    .steps span { color: var(--muted); }
+    .shot { width: 100%; border-radius: 14px; border: 1px solid var(--line); margin-top: 28px; }
+    .pricing { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .plan { border: 1px solid var(--line); border-radius: 14px; padding: 26px; }
+    .plan.pro { border: 2px solid var(--orange); background: var(--soft); }
+    .plan .price { font-size: 36px; font-weight: 800; margin: 8px 0 4px; }
+    .plan .price small { font-size: 15px; color: var(--muted); font-weight: 500; }
+    .plan ul { padding-left: 18px; color: var(--muted); }
+    footer { padding: 32px 0; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="logo">☀️ Kaduna Solar Sizer</div>
+      <a class="btn ghost" href="#pricing">Pricing</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="wrap">
+      <h1>Send your customers a solar quote in 2 minutes, not 2 days.</h1>
+      <p>Type in the customer's appliances. Get the right panels, batteries and inverter, sized for Kaduna's cloudiest month, and a professional PDF quote with your business name on it.</p>
+      <div class="ctas">
+        <a class="btn" id="try-link" href="#">Try it free</a>
+        <a class="btn ghost" href="#how">See how it works</a>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2>Why customers call you back angry in August</h2>
+      <div class="problem">
+        <div class="card">
+          <div class="stat">29%</div>
+          <h3>Less sun in August than April</h3>
+          <p>Rainy-season clouds cut panel output by almost a third in Kaduna, based on 10 years of NASA satellite data.</p>
+        </div>
+        <div class="card">
+          <div class="stat">85%</div>
+          <h3>Coverage when sized for "average" sun</h3>
+          <p>A typical home system sized on a sunny-month rule of thumb runs short during the rains, and the batteries die at night.</p>
+        </div>
+        <div class="card">
+          <div class="stat">2 min</div>
+          <h3>To a sized, priced, branded quote</h3>
+          <p>No more long WhatsApp voice notes, hand calculations or copy-pasting prices into a document.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" style="background: var(--soft);">
+    <div class="wrap">
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><div><strong>Add your prices once</strong><span>Panels, batteries, inverters, installation. Your numbers, your margin.</span></div></li>
+        <li><div><strong>Enter the customer's appliances</strong><span>Bulbs, fans, TV, fridge, pumping machine. Day and night hours.</span></div></li>
+        <li><div><strong>Get the system design</strong><span>Panels, battery bank, inverter kVA and charge controller, checked against every month of the year.</span></div></li>
+        <li><div><strong>Send the PDF quote</strong><span>One page, your branding, with a chart that shows the customer why the size is right.</span></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="wrap">
+      <h2>Pricing</h2>
+      <div class="pricing">
+        <div class="plan">
+          <h3>Starter</h3>
+          <div class="price">Free</div>
+          <ul>
+            <li>5 quotes per month</li>
+            <li>Kaduna solar data</li>
+            <li>PDF quotes</li>
+          </ul>
+          <a class="btn ghost" id="try-link-2" href="#">Start free</a>
+        </div>
+        <div class="plan pro">
+          <h3>Pro</h3>
+          <div class="price">₦10,000 <small>/ month</small></div>
+          <ul>
+            <li>Unlimited quotes</li>
+            <li>Your logo on every quote</li>
+            <li>Saved customers and price lists</li>
+            <li>More Nigerian cities (coming soon)</li>
+          </ul>
+          <a class="btn" href="#" id="pro-link">Join the Pro waitlist</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      Solar data: NASA POWER Project. Built in Kaduna for Nigerian solar installers.
+    </div>
+  </footer>
+
+  <script>
+    // Set these once the app is deployed
+    const APP_URL = "#";
+    const WAITLIST_URL = "#";
+    document.getElementById("try-link").href = APP_URL;
+    document.getElementById("try-link-2").href = APP_URL;
+    document.getElementById("pro-link").href = WAITLIST_URL;
+  </script>
+</body>
+</html>

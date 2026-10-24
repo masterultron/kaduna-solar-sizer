@@ -21,7 +21,8 @@
     .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
     header { padding: 18px 0; }
     header .wrap { display: flex; justify-content: space-between; align-items: center; }
-    .logo { font-weight: 800; font-size: 18px; }
+    .logo { font-weight: 800; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+    .logo svg { color: var(--orange); }
     .btn { display: inline-block; background: var(--orange); color: #fff; padding: 12px 22px; border-radius: 10px; font-weight: 700; text-decoration: none; }
     .btn:hover { background: var(--orange-dark); }
     .btn.ghost { background: transparent; color: var(--orange-dark); border: 2px solid var(--orange); }
@@ -53,9 +54,9 @@
 </head>
 <body>
   <header>
-    <div class="wrap">
-      <div class="logo">☀️ Kaduna Solar Sizer</div>
-      <a class="btn ghost" href="#pricing">Pricing</a>
+    <div class="logo">
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      Kaduna Solar Sizer
     </div>
   </header>
 
@@ -64,7 +65,7 @@
       <h1>Send your customers a solar quote in 2 minutes, not 2 days.</h1>
       <p>Type in the customer's appliances. Get the right panels, batteries and inverter, sized for Kaduna's cloudiest month, and a professional PDF quote with your business name on it.</p>
       <div class="ctas">
-        <a class="btn" id="try-link" href="#">Try it free</a>
+        <a class="btn" id="try-link" href="https://kaduna-solar-sizer.streamlit.app" target="_blank" rel="noopener">Try it free</a>
         <a class="btn ghost" href="#how">See how it works</a>
       </div>
     </div>
@@ -117,7 +118,7 @@
             <li>Kaduna solar data</li>
             <li>PDF quotes</li>
           </ul>
-          <a class="btn ghost" id="try-link-2" href="#">Start free</a>
+          <a class="btn ghost" id="try-link-2" href="https://kaduna-solar-sizer.streamlit.app" target="_blank" rel="noopener">Start free</a>
         </div>
         <div class="plan pro">
           <h3>Pro</h3>
@@ -142,7 +143,7 @@
 
   <script>
     // Set these once the app is deployed
-    const APP_URL = "#";
+    const APP_URL = "https://kaduna-solar-sizer.streamlit.app";
     const WAITLIST_URL = "#";
     document.getElementById("try-link").href = APP_URL;
     document.getElementById("try-link-2").href = APP_URL;

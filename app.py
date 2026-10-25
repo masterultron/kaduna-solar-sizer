@@ -1,4 +1,4 @@
-"""Kaduna Solar Sizer — web app for solar installers.
+"""The Solar Sizer — web app for solar installers.
 
 Run locally with:  streamlit run app.py
 """
@@ -10,7 +10,7 @@ import streamlit as st
 from quote_pdf import build_quote, coverage_chart
 from sizing import BATTERIES, DEFAULT_PRICES, Appliance, load_monthly_sun, size_system
 
-st.set_page_config(page_title="Kaduna Solar Sizer", page_icon="☀️", layout="wide")
+st.set_page_config(page_title="The Solar Sizer", page_icon=":material/wb_sunny:", layout="wide")
 
 DEFAULT_APPLIANCES = pd.DataFrame([
     {"Appliance": "LED bulbs", "Watts": 10, "Qty": 8, "Day hours": 0.0, "Night hours": 6.0},
@@ -50,7 +50,7 @@ with st.sidebar:
     }
 
 # --- Main: customer load -----------------------------------------------------
-st.title("☀️ Kaduna Solar Sizer")
+st.title(":material/wb_sunny: The Solar Sizer")
 st.caption("Size a solar system and send a quote in 2 minutes — designed for Kaduna's least sunny month, "
            "using 10 years of NASA satellite data.")
 
@@ -120,7 +120,7 @@ with right:
 st.subheader("3. Send the quote")
 quote_no = f"Q-{datetime.now():%y%m%d-%H%M}"
 pdf = build_quote(result, appliances, business, customer, quote_no)
-st.download_button("📄 Download PDF quote", pdf, file_name=f"solar_quote_{quote_no}.pdf",
+st.download_button("Download PDF quote", pdf, icon=":material/download:", file_name=f"solar_quote_{quote_no}.pdf",
                    mime="application/pdf", type="primary")
 
 st.divider()

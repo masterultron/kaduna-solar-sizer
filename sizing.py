@@ -22,6 +22,7 @@ INVERTER_EFFICIENCY = 0.90
 INVERTER_SIZES_KVA = [1, 1.5, 2.5, 3.5, 5, 7.5, 10, 15]
 POWER_FACTOR = 0.8         # kVA → usable watts
 INVERTER_MARGIN = 1.25     # 25% headroom over the peak load
+INVERTER_SURGE_RATIO = 2.0 # inverters can briefly deliver ~2x their rating to start motors
 CONTROLLER_SIZES_A = [20, 30, 40, 60, 80, 100]
 
 BATTERIES = {
@@ -47,6 +48,10 @@ class Appliance:
     quantity: int
     day_hours: float    # hours used while the sun is up
     night_hours: float  # hours used after sunset (runs from the battery)
+    duty: float = 1.0   # share of the time it draws full power (fridges cycle on and off)
+    surge: float = 1.0  # start-up multiplier for motors (pumps, compressors)
+    variant: str = ""   # type / size, e.g. "Double-door"
+    note: str = ""      # brand or note, e.g. "Samsung, kitchen"
 
     @property
     def total_watts(self) -> float:
@@ -54,11 +59,16 @@ class Appliance:
 
     @property
     def daily_wh(self) -> float:
-        return self.total_watts * (self.day_hours + self.night_hours)
+        return self.total_watts * self.duty * (self.day_hours + self.night_hours)
+
+    @property
+    def label(self) -> str:
+        details = ", ".join(x for x in [self.variant, self.note] if x)
+        return f"{self.name} ({details})" if details else self.name
 
     @property
     def night_wh(self) -> float:
-        return self.total_watts * self.night_hours
+        return self.total_watts * self.duty * self.night_hours
 
 
 def load_monthly_sun(path: Path = MONTHLY_DATA) -> pd.DataFrame:
@@ -121,8 +131,11 @@ def size_system(
     panel_count = max(1, math.ceil(pv_watts_needed / panel_watts))
     pv_watts = panel_count * panel_watts
 
-    # 4. Inverter: everything on at once, plus headroom
-    inverter_kva = round_up_to(peak_w * INVERTER_MARGIN / (POWER_FACTOR * 1000), INVERTER_SIZES_KVA)
+    # 4. Inverter: everything on at once, plus headroom. It must also start the
+    #    biggest motor (one at a time) while everything else is running.
+    extra_surge_w = max((a.watts * (a.surge - 1) for a in appliances), default=0)
+    inverter_w = max(peak_w * INVERTER_MARGIN, (peak_w + extra_surge_w) / INVERTER_SURGE_RATIO)
+    inverter_kva = round_up_to(inverter_w / (POWER_FACTOR * 1000), INVERTER_SIZES_KVA)
     volts = system_voltage(inverter_kva, pv_watts)
 
     # 5. Batteries: night-time energy, only part of the battery is usable

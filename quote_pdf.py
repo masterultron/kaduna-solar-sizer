@@ -1,5 +1,6 @@
 """Builds a branded PDF quote from a sizing result."""
 import io
+import unicodedata
 from datetime import date
 
 import matplotlib
@@ -12,6 +13,39 @@ from sizing import Appliance
 ORANGE = (230, 126, 34)
 DARK = (40, 40, 40)
 GREY = (120, 120, 120)
+
+
+SWAPS = {"₦": "NGN ", "—": "-", "–": "-", "‘": "'", "’": "'", "“": '"', "”": '"', "…": "..."}
+
+
+def pdf_text(text: str) -> str:
+    """The built-in PDF fonts only cover basic Latin characters.
+
+    Keep names readable: drop accent marks the font can't show (e.g. Yoruba "Ẹ̀ṣọ́" -> "Eso")
+    and swap common symbols, instead of printing question marks.
+    """
+    text = str(text)
+    for old, new in SWAPS.items():
+        text = text.replace(old, new)
+    out = []
+    for ch in text:
+        try:
+            ch.encode("latin-1")
+            out.append(ch)
+        except UnicodeEncodeError:
+            base = "".join(c for c in unicodedata.normalize("NFKD", ch) if not unicodedata.combining(c))
+            out.append(base.encode("latin-1", "replace").decode("latin-1") if base else "")
+    return "".join(out)
+
+
+def fit(pdf: FPDF, text: str, width: float) -> str:
+    """Shorten text with '...' so it fits in a table cell."""
+    text = pdf_text(text)
+    if pdf.get_string_width(text) <= width - 2:
+        return text
+    while text and pdf.get_string_width(text + "...") > width - 2:
+        text = text[:-1]
+    return text + "..."
 
 
 def naira(amount: float) -> str:
@@ -45,10 +79,10 @@ def build_quote(result: dict, appliances: list[Appliance], business: dict, custo
     pdf.set_text_color(255, 255, 255)
     pdf.set_font("Helvetica", "B", 18)
     pdf.set_xy(12, 8)
-    pdf.cell(0, 8, business["name"] or "Solar Installer")
+    pdf.cell(0, 8, fit(pdf, business["name"] or "Solar Installer", 186))
     pdf.set_font("Helvetica", "", 10)
     pdf.set_xy(12, 17)
-    pdf.cell(0, 6, " | ".join(x for x in [business.get("phone"), business.get("location")] if x))
+    pdf.cell(0, 6, pdf_text(" | ".join(x for x in [business.get("phone"), business.get("location")] if x)))
 
     pdf.set_text_color(*DARK)
     pdf.set_xy(12, 34)
@@ -56,7 +90,7 @@ def build_quote(result: dict, appliances: list[Appliance], business: dict, custo
     pdf.cell(0, 8, "Solar System Quote", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", "", 10)
     pdf.cell(0, 6, f"Quote no: {quote_no}    Date: {date.today():%d %B %Y}", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(0, 6, f"Prepared for: {customer or 'Customer'}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 6, pdf_text(f"Prepared for: {customer or 'Customer'}"), new_x="LMARGIN", new_y="NEXT")
     pdf.ln(1)
 
     # Recommended system
@@ -73,13 +107,15 @@ def build_quote(result: dict, appliances: list[Appliance], business: dict, custo
     # Customer load
     section(pdf, "Your appliances")
     pdf.set_font("Helvetica", "B", 9)
-    for header, w in zip(["Appliance", "Watts", "Qty", "Day hrs", "Night hrs", "Wh/day"], [66, 24, 16, 24, 26, 30]):
+    widths = [96, 18, 12, 18, 20, 22]
+    for header, w in zip(["Appliance", "Watts", "Qty", "Day hrs", "Night hrs", "Wh/day"], widths):
         pdf.cell(w, 7, header, border="B")
     pdf.ln()
     pdf.set_font("Helvetica", "", 9)
     for a in appliances:
-        for value, w in zip([a.name, f"{a.watts:g}", a.quantity, f"{a.day_hours:g}", f"{a.night_hours:g}", f"{a.daily_wh:,.0f}"],
-                            [66, 24, 16, 24, 26, 30]):
+        values = [fit(pdf, a.label, widths[0]), f"{a.watts:g}", a.quantity,
+                  f"{a.day_hours:g}", f"{a.night_hours:g}", f"{a.daily_wh:,.0f}"]
+        for value, w in zip(values, widths):
             pdf.cell(w, 5, str(value))
         pdf.ln()
     pdf.set_font("Helvetica", "B", 9)

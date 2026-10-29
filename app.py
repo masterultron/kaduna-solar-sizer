@@ -7,23 +7,11 @@ from datetime import datetime
 import pandas as pd
 import streamlit as st
 
+from appliance_ui import appliance_section
 from quote_pdf import build_quote, coverage_chart
-from sizing import BATTERIES, DEFAULT_PRICES, Appliance, load_monthly_sun, size_system
+from sizing import BATTERIES, DEFAULT_PRICES, load_monthly_sun, size_system
 
 st.set_page_config(page_title="The Solar Sizer", page_icon=":material/wb_sunny:", layout="wide")
-
-DEFAULT_APPLIANCES = pd.DataFrame([
-    {"Appliance": "LED bulbs", "Watts": 10, "Qty": 8, "Day hours": 0.0, "Night hours": 6.0},
-    {"Appliance": "Ceiling fan", "Watts": 75, "Qty": 3, "Day hours": 6.0, "Night hours": 8.0},
-    {"Appliance": "TV (43 inch)", "Watts": 100, "Qty": 1, "Day hours": 3.0, "Night hours": 4.0},
-    {"Appliance": "Fridge", "Watts": 150, "Qty": 1, "Day hours": 12.0, "Night hours": 12.0},
-    {"Appliance": "Phone & laptop charging", "Watts": 65, "Qty": 2, "Day hours": 3.0, "Night hours": 2.0},
-])
-
-COMMON_APPLIANCES = {
-    "Freezer": 200, "Air conditioner (1 HP)": 900, "Water pump (1 HP)": 750, "Pressing iron": 1000,
-    "Desktop computer": 200, "Standing fan": 60, "Decoder / router": 25, "Microwave": 1000,
-}
 
 # --- Sidebar: installer settings --------------------------------------------
 with st.sidebar:
@@ -56,30 +44,10 @@ st.caption("Size a solar system and send a quote in 2 minutes — designed for K
 
 customer = st.text_input("Customer name", placeholder="e.g. Mallam Musa, Barnawa")
 
-st.subheader("1. Customer's appliances")
-st.caption("Edit the table: change values, add rows at the bottom, or delete rows. "
-           "Day hours run straight from the panels; night hours run from the battery.")
-with st.expander("Typical wattages"):
-    st.write(" · ".join(f"**{name}** {w} W" for name, w in COMMON_APPLIANCES.items()))
-
-table = st.data_editor(
-    DEFAULT_APPLIANCES, num_rows="dynamic", width="stretch", key="appliances",
-    column_config={
-        "Watts": st.column_config.NumberColumn(min_value=0, step=5),
-        "Qty": st.column_config.NumberColumn(min_value=0, step=1),
-        "Day hours": st.column_config.NumberColumn(min_value=0, max_value=12, step=0.5),
-        "Night hours": st.column_config.NumberColumn(min_value=0, max_value=12, step=0.5),
-    },
-)
-
-appliances = [
-    Appliance(str(r["Appliance"]), float(r["Watts"]), int(r["Qty"]), float(r["Day hours"]), float(r["Night hours"]))
-    for _, r in table.dropna().iterrows()
-    if r["Watts"] > 0 and r["Qty"] > 0
-]
+appliances = appliance_section()
 
 if not appliances:
-    st.info("Add at least one appliance to size a system.")
+    st.info("Add the customer's appliances to size a system.", icon=":material/info:")
     st.stop()
 
 monthly = load_monthly_sun()
